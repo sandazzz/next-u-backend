@@ -1,11 +1,8 @@
 {
-  "name": "backend",
+  "name": "next-u-backend",
   "version": "1.0.0",
   "description": "This project was bootstrapped with Fastify-CLI.",
   "main": "app.js",
-  "directories": {
-    "test": "test"
-  },
   "scripts": {
     "test": "exit 1",
     "start": "npx knex migrate:latest && fastify start -l info app.js",
@@ -13,7 +10,7 @@
     "lint": "eslint ."
   },
   "keywords": [],
-  "author": "",
+  "author": "Alejandro Oviedo <alejandro.oviedo.g@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@fastify/autoload": "^5.0.0",
