@@ -4,7 +4,7 @@
 After running `npm install` on the project, create a .env file in this directory with two entries: "PORT" and "PG_CONNECTION_STRING".
 Example:
 ```
-PG_CONNECTION_STRING=postgres://postgres:secretpassword@localhost:7778/nextubackend
+PG_CONNECTION_STRING=postgres://postgres:secretpassword@localhost:7778/nextudatabase
 PORT=4000
 ```
 
