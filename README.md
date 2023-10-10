@@ -8,6 +8,6 @@ PG_CONNECTION_STRING=postgres://postgres:secretpassword@localhost:7778/nextudata
 PORT=4000
 ```
 
-After creating the .env, you will need to run the migrations. For doing so, run `npm run migrate` in your terminal
+After creating the .env, you will need to run the migrations. For doing so, run `npx knex migrate:latest` in your terminal
 
 The only file that needs to be modified is user.js.
