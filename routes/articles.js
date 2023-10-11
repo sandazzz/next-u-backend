@@ -15,9 +15,28 @@ module.exports = async function (fastify, opts) {
   fastify.route({
     url: '/api/articles',
     method: 'POST',
-    preHandler: validateToken,
+    //preHandler: validateToken,
     handler: async (req, reply) => {
       // add the route implementation here
+      const body = req.body.article.body
+      const description = req.body.article.description
+      const tagList = req.body.article.tagList
+      const title = req.body.article.title
+      await database('article').insert({
+        body: body,
+        description: description,
+        tagList: tagList,
+        title: title
+      })
+
+      return {
+        article: {
+          body: body,
+          description: description,
+          tagList: tagList,
+          title: title
+        }
+      }
     }
   })
 
@@ -44,10 +63,28 @@ module.exports = async function (fastify, opts) {
     method: 'GET',
     handler: async (req, reply) => {
       // add the route implementation here
+      const article = await database('article').where({
+        slug: req.params.articleSlug
+      }).first()
+
+      const user = await database('user').where({
+        id: article.userId
+      }).first()
+
+      article.author = {
+        username: user.username,
+        bio: user.bio,
+        image: user.image
+      }
+
+      return {
+        article: article
+      }
     }
   })
 
   // --- GET ARTICLES ---
+  // google.com ? param1 = prop1 & param2=prop2
   // this route should receive on the querystring (req.query) "author"
   // if "author" field is present then it should be used to filter the results. "author" will be the user's username
   // the response body should be something like the following:
@@ -74,6 +111,32 @@ module.exports = async function (fastify, opts) {
     method: 'GET',
     url: '/api/articles',
     handler: async function (req, reply) {
+      const where = {}
+      if (req.query.author) {
+
+        const user = await database('user').where({
+          username: req.query.author
+        }).first()
+
+        where.userId = user.id
+      }
+      const articles = await database('article').where(where)
+
+      for (const article of articles) {
+        // for every article we have
+        // we retrieve its user
+        const user = await database('user').where({ id: article.userId }).first()
+        article.author = {
+          username: user.username,
+          bio: user.bio,
+          image: user.image,
+          email: user.email,
+        }
+      }
+
+      return {
+        articles
+      }
     }
   })
 
