@@ -15,7 +15,7 @@ module.exports = async function (fastify, opts) {
   fastify.route({
     url: '/api/articles',
     method: 'POST',
-    //preHandler: validateToken,
+    preHandler: validateToken,
     handler: async (req, reply) => {
       // add the route implementation here
       const body = req.body.article.body
