@@ -129,15 +129,3 @@ module.exports = async function (fastify, opts) {
     }
   })
 }
-
-
-  // --- do not modify ---
-  fastify.put('/api/user', async (req, reply) => req.body)
-  // --- do not modify ---
-  fastify.get('/api/profiles/:username', async (req, reply) => {
-    const user = await database('user').select(['username', 'bio', 'image']).where({ username: req.params.username }).first()
-    return {
-      profile: user
-    }
-  })
-}
