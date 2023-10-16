@@ -21,7 +21,19 @@ module.exports = async function (fastify, opts) {
     method: 'GET',
     preHandler: validateToken,
     handler: async (req, reply) => {
+
       // add the route implementation here
+      const userProfile = await database('user').where({
+        id: req.userId
+      }).first()
+
+      return {
+        user: {
+          email :userProfile.email,
+          username : userProfile.username,
+          token : userProfile.token
+        }
+      }
     }
   })
 
@@ -44,7 +56,28 @@ module.exports = async function (fastify, opts) {
     url: '/api/users',
     method: 'POST',
     handler: async (req, reply) => {
+
       // add the route implementation here
+
+      const username = req.body.user.username
+      const email = req.body.user.email
+      const password = await hashString(req.body.user.password)
+      const token = await generateToken()
+
+      await database('user').insert({
+        username,
+        email,
+        password,
+        token,
+      })
+      
+      return {
+        user: {
+          username,
+          email,
+          token
+        }
+      }
     }
   })
 
@@ -65,6 +98,7 @@ module.exports = async function (fastify, opts) {
   // if the passwords are NOT a match, the response should have a status code 401 and
   // the request body should have a "message" field with the value "invalid credentials"
   // HINT: remember that all utility methods ( hashString and generateToken ) are asynchronous functions! they need to be used with "await"
+
   fastify.post('/api/users/login', async function (req, reply) {
     // add the route implementation here
     const { email, password } = req.body.user
@@ -84,6 +118,18 @@ module.exports = async function (fastify, opts) {
       }
     }
   })
+
+  // --- do not modify ---
+  fastify.put('/api/user', async (req, reply) => req.body)
+  // --- do not modify ---
+  fastify.get('/api/profiles/:username', async (req, reply) => {
+    const user = await database('user').select(['username', 'bio', 'image']).where({ username: req.params.username }).first()
+    return {
+      profile: user
+    }
+  })
+}
+
 
   // --- do not modify ---
   fastify.put('/api/user', async (req, reply) => req.body)
